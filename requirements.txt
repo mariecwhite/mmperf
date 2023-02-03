@@ -11,6 +11,6 @@ numpy
 synr
 # packages for triton
 torch
-#triton
+triton
 # packages for cuda
 requests

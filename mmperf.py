@@ -22,7 +22,7 @@ import GPUtil
 import csv
 import json
 import torch
-#import triton
+import triton
 
 plt.style.use('ggplot')
 
@@ -475,13 +475,23 @@ def main(argv):
 
     for idx, backend in enumerate(binaries):
         bar_x = []
-        speeds = []
+        speeds = {}
         for binary in binaries[backend]:
             print(backend, binary)
-            speeds.append(binary['speed'])
-            bar_x.append(bar_ordering.index(binary['size']) + idx * BAR_WIDTH)
-        if len(bar_x) > 0:
-            autolabel(plt.bar(bar_x, speeds, BAR_WIDTH, color=BAR_COLORS[backend], label=backend))
+            speeds[binary["size"]] = binary['speed']
+            #bar_x.append(bar_ordering.index(binary['size']) + idx * BAR_WIDTH)
+        #if len(bar_x) > 0:
+            #autolabel(plt.bar(bar_x, speeds, BAR_WIDTH, color=BAR_COLORS[backend], label=backend))
+        if len(speeds) > 0:
+            ordered_sizes = []
+            ordered_speeds = []
+            for x in bar_ordering:
+                if x in speeds:
+                    ordered_speeds.append(speeds[x])
+                    ordered_sizes.append(bar_ordering.index(x))
+            print(f"ordered_speeds: {ordered_speeds}")
+            print(f"ordered_sizes: {ordered_sizes}")
+            plt.plot(ordered_sizes, ordered_speeds, color=BAR_COLORS[backend], label=backend)
         else:
             print("No results could be collected for backend", backend)
 
